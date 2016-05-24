@@ -11,7 +11,10 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                <a class="navbar-brand topnav" href="<?=site_url('users'); ?>">Home Page</a>
+                <a class="navbar-brand topnav" href="<?=site_url('users'); ?>">Home Page 
+                    [ Document Management System ]
+                <img src="<?=base_url(); ?>assets/img/logodms.png" width="50" height="50" />
+                </a>
             </div>
             <!-- Collect the nav links, forms, and other content for toggling -->
             <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">

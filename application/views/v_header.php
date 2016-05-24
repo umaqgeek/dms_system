@@ -8,7 +8,7 @@
         <meta name="description" content="">
         <meta name="author" content="">
 
-        <title>PKNM DMS</title>
+        <title>Document Management System (DMS)</title>
 
         <!-- Bootstrap Core CSS -->
         <link href="<?= base_url(); ?>assets/css/bootstrap.min.css" rel="stylesheet">
@@ -16,7 +16,7 @@
         <!-- Custom CSS -->
         <link href="<?= base_url(); ?>assets/css/landing-page.css" rel="stylesheet">
         
-        <link rel="shortcut icon" type="image/x-icon" href="<?=base_url(); ?>assets/img/logopknm.jpg">
+        <link rel="shortcut icon" type="image/x-icon" href="<?=base_url(); ?>assets/img/logodms.png">
 
         <!-- Custom Fonts -->
         <link href="<?= base_url(); ?>assets/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css">

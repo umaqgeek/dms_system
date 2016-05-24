@@ -18,6 +18,8 @@
                     <th>Size</th>
                     <th>Date Added</th>
                     <th>Description</th>
+                    <th>Location</th>
+                    <th>State</th>
                     <th>Owner</th>
                     <th>Action</th>
                 </tr>
@@ -49,6 +51,8 @@
                     <td><?=number_format($d->d_size, 2); ?> kb</td>
                     <td><?=$this->my_func->sql_time_to_datetime($d->d_datetime); ?></td>
                     <td><?=$d->d_desc; ?></td>
+                    <td><?=$d->m_desc; ?></td>
+                    <td><?=$d->s_desc; ?></td>
                     <td><?=$d->u_fullname; ?></td>
                     <td>
                         <?php

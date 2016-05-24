@@ -41,5 +41,5 @@
     </head>
     <body>
         <div class="row">
-            <div class="col-md-10 col-md-offset-1" style="margin-top: 5%;">
+            <div class="col-md-10 col-md-offset-1" style="margin-top: 15%;">
                 

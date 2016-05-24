@@ -34,17 +34,22 @@ class Users extends MY_Controller
         {
             if ($stat == 'view') {
                 $sql = "SELECT * "
-                        . "FROM documents1 d, document_type dt, "
-                        . "document_class dc, users1 u "
+                        . "FROM document_type dt, "
+                        . "document_class dc, users1 u, documents1 d "
+                        . "LEFT JOIN mukim m ON m.m_id = d.m_id "
+                        . "LEFT JOIN state s ON s.s_id = d.s_id "
                         . "WHERE d.dt_id = dt.dt_id "
                         . "AND d.dc_id = dc.dc_id "
                         . "AND d.u_id = u.u_id "
-                        . "AND d.dc_id = 2 ";
+                        . "AND d.dc_id = 2 "
+                        . "ORDER BY d.d_datetime DESC ";
                 $data['document'] = $this->m_conndb->getQuery($sql);
                 $this->viewpage('v_pub_doc', $data);
             } else if ($stat == 'add') {
                 $data['document_type'] = $this->m_conndb->getAll('document_type');
                 $data['document_class'] = $this->m_conndb->getAll('document_class');
+                $data['mukim'] = $this->m_conndb->getAll('mukim');
+                $data['state'] = $this->m_conndb->getAll('state');
                 $this->viewpage('v_puc_doc_add', $data);
             }
         }
@@ -143,19 +148,108 @@ class Users extends MY_Controller
                 $sess = $this->session->all_userdata();
                 $u_id_sess = $sess['u_id'];
                 $sql = "SELECT * "
-                        . "FROM documents1 d, document_type dt, "
-                        . "document_class dc, users1 u "
+                        . "FROM document_type dt, "
+                        . "document_class dc, users1 u, documents1 d "
+                        . "LEFT JOIN mukim m ON m.m_id = d.m_id "
+                        . "LEFT JOIN state s ON s.s_id = d.s_id "
                         . "WHERE d.dt_id = dt.dt_id "
                         . "AND d.dc_id = dc.dc_id "
                         . "AND d.u_id = u.u_id "
                         . "AND d.dc_id = 1 "
-                        . "AND d.u_id = '".$u_id_sess."' ";
+                        . "AND d.u_id = '".$u_id_sess."' "
+                        . "ORDER BY d.d_datetime DESC ";
                 $data['document'] = $this->m_conndb->getQuery($sql);
                 $this->viewpage('v_pri_doc', $data);
             } else if ($stat == 'add') {
                 $data['document_type'] = $this->m_conndb->getAll('document_type');
                 $data['document_class'] = $this->m_conndb->getAll('document_class');
+                $data['mukim'] = $this->m_conndb->getAll('mukim');
+                $data['state'] = $this->m_conndb->getAll('state');
                 $this->viewpage('v_pri_doc_add', $data);
+            }
+        }
+        
+        public function manageLocationArea($stat='view', $page='m')
+        {
+            if ($stat == 'view') {
+                $data['mukim'] = $this->m_conndb->getAll('mukim');
+                $data['state'] = $this->m_conndb->getAll('state');
+                $this->viewpage('v_manageStateMukim', $data);
+            } else if ($stat == 'add') {
+                if ($page == 'm') {
+                    $this->viewpage('v_addMukim');
+                } else {
+                    $this->viewpage('v_addState');
+                } 
+            } else if ($stat == 'addprocess') {
+                $data_input = $this->input->post();
+                $id = -1;
+                if ($page == 'm') {
+                    $id = $this->m_conndb->add('mukim', $data_input);
+                } else if ($page == 's') {
+                    $id = $this->m_conndb->add('state', $data_input);
+                } else {
+                    $this->session->set_flashdata('error', 'Opss! Something is wrong!');
+                    redirect(site_url('users/manageLocationArea'));
+                }
+                $str = "";
+                if ($page == 'm') {
+                    $str = "Area";
+                } else if ($page == 's') {
+                    $str = "State";
+                }
+                if ($id > 0) {
+                    $this->session->set_flashdata('sucess', 'Add '.$str.' success.');
+                    redirect(site_url('users/manageLocationArea'));
+                } else {
+                    $this->session->set_flashdata('error', 'Add '.$str.' failed!');
+                    redirect(site_url('users/manageLocationArea/add/'.$page));
+                }
+            } else if ($stat == 'delete') {
+                if ($this->input->get('idx')) {
+                    $idx = $this->input->get('idx');
+                    $id = $this->my_func->custom_decrypt($idx);
+                    if ($page == 'm') {
+                        $this->m_conndb->delete('mukim', 'm_id', $id);
+                    } else if ($page == 's') {
+                        $this->m_conndb->delete('state', 's_id', $id);
+                    }
+                }
+                redirect(site_url('users/manageLocationArea'));
+            } else if ($stat == 'edit') {
+                if ($this->input->get('idx')) {
+                    $idx = $this->input->get('idx');
+                    $id = $this->my_func->custom_decrypt($idx);
+                    $data = array();
+                    if ($page == 'm') {
+                        $data = $this->m_conndb->get('mukim', 'm_id', $id);
+                    } else if ($page == 's') {
+                        $data = $this->m_conndb->get('state', 's_id', $id);
+                    }
+                    if (isset($data) && !empty($data)) {
+                        $data_d['d'] = $data[0];
+                        $data_d['p'] = $page;
+                        $this->viewpage('v_editStateMukim', $data_d);
+                    } else {
+                        $this->session->set_flashdata('error', 'Invalid data!');
+                        redirect(site_url('users/manageLocationArea'));
+                    }
+                }
+            } else if ($stat == 'editprocess') {
+                if ($this->input->post('idx')) {
+                    $idx = $this->input->post('idx');
+                    $id = $this->my_func->custom_decrypt($idx);
+                    $data_d = $this->input->post();
+                    unset($data_d['idx']);
+                    if ($page == 'm') {
+                        $this->m_conndb->edit('mukim', 'm_id', $id, $data_d);
+                    } else if ($page == 's') {
+                        $this->m_conndb->edit('state', 's_id', $id, $data_d);
+                    }
+                } else {
+                    $this->session->set_flashdata('error', 'Invalid data!');
+                }
+                redirect(site_url('users/manageLocationArea'));
             }
         }
         

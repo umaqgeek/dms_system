@@ -29,6 +29,9 @@
                         <a href="<?=site_url('users/privateDocument'); ?>">My Documents</a>
                     </li>
                     <li>
+                        <a href="<?=site_url('users/manageLocationArea'); ?>">Manage Location/Area</a>
+                    </li>
+                    <li>
                         <a href="#!">[<?=$this->session->userdata('u_fullname'); ?>]</a>
                     </li>
                     <li>

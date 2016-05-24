@@ -63,12 +63,15 @@ class Main extends CI_Controller
         public function listDocuments()
         {
             $sql = "SELECT * "
-                    . "FROM documents1 d, document_type dt, "
-                    . "document_class dc, users1 u "
+                    . "FROM document_type dt, "
+                    . "document_class dc, users1 u, documents1 d "
+                    . "LEFT JOIN mukim m ON m.m_id = d.m_id "
+                    . "LEFT JOIN state s ON s.s_id = d.s_id "
                     . "WHERE d.dt_id = dt.dt_id "
                     . "AND d.dc_id = dc.dc_id "
                     . "AND d.u_id = u.u_id "
-                    . "AND d.dc_id = 2 ";
+                    . "AND d.dc_id = 2 "
+                    . "ORDER BY d.d_datetime DESC ";
             $data['document'] = $this->m_conndb->getQuery($sql);
             $this->viewpage('v_pub_doc', $data);
         }
